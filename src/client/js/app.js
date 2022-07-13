@@ -7,5 +7,4 @@ const client = require("./client.js");
 
 //Public variables
 const __development__ = true;
-
 //Code...
