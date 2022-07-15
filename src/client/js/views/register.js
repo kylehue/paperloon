@@ -21,7 +21,6 @@ let register = {
 		methods: {
 			validateUsername: function(event) {
 				let input = $(event.target);
-
 				let validate = () => {
 					input.addClass("is-valid");
 					input.removeClass("is-invalid");

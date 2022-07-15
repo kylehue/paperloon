@@ -1,67 +1,37 @@
-<div class="container">
-  <form>
-    <div class="form-row">
-      <div class="col-md-6 mb-3">
-        <label for="registerUsername">Username</label>
-        <div class="input-group">
-          <div class="input-group-prepend">
-            <span class="input-group-text">
-              <i class="bi bi-person-fill"></i>
-            </span>
-          </div>
-          <input v-on:input="validateUsername($event)" type="text" class="form-control" id="registerUsername" placeholder="Username" required>
-          <div v-if="usernameValid" class="valid-feedback">
-            {{config.validUsernameMessage}}
-          </div>
-          <div v-if="!usernameValid" class="invalid-feedback">
-            {{config.invalidUsernameMessage}}
-          </div>
-        </div>
+<div class="container d-flex flex-row align-items-center h-100">
+  <div class="bg-slate container d-flex flex-column pb-3 pt-4 rounded">
+    <div class="row d-flex pl-3 pr-3">
+      <div class="col-md-6 d-flex flex-row justify-content-center">
+        <p class="h5 font-weight-bold">Create an account</p>
       </div>
     </div>
-    <div class="form-row">
-      <div class="col-md-6 mb-3">
-        <label for="registerPassword">Password</label>
-        <div class="input-group">
-          <div class="input-group-prepend">
-            <span class="input-group-text">
-              <i class="bi bi-lock-fill"></i>
-            </span>
-          </div>
-          <input v-on:input="validatePassword($event)" type="password" class="form-control" id="registerPassword" placeholder="Password" required>
-          <div v-if="passwordValid" class="valid-feedback">
-            {{config.validPasswordMessage}}
-          </div>
-          <div v-if="!passwordValid" class="invalid-feedback">
-            {{config.invalidPasswordMessage}}
-          </div>
+    <form class="w-100">
+      <div class="form-group">
+        <div class="col-md-6 mb-3">
+          <form-input id="registerUsername" label="Username" icon="person-fill" placeholder="Username" v-on:input="validateUsername($event)" v-bind:validFeedback="config.validUsernameMessage" v-bind:invalidFeedback="config.invalidUsernameMessage">
+          </form-input>
         </div>
       </div>
-    </div>
-    <div class="form-row">
-      <div class="col-md-6 mb-3">
-        <label for="registerPassword2">Confirm Password</label>
-        <div class="input-group">
-          <div class="input-group-prepend">
-            <span class="input-group-text">
-              <i class="bi bi-lock"></i>
-            </span>
-          </div>
-          <input v-on:input="confirmPassword($event)" type="password" class="form-control" id="registerPassword2" placeholder="Confirm Password" required>
-          <div v-if="password2Valid" class="valid-feedback">
-            {{config.validPassword2Message}}
-          </div>
-          <div v-if="!password2Valid" class="invalid-feedback">
-            {{config.invalidPassword2Message}}
-          </div>
+      <div class="form-group">
+        <div class="col-md-6 mb-3">
+          <form-input type="password" id="registerPassword" label="Password" icon="lock-fill" placeholder="Password" v-on:input="validatePassword($event)" v-bind:validFeedback="config.validPasswordMessage" v-bind:invalidFeedback="config.invalidPasswordMessage">
+          </form-input>
         </div>
       </div>
-    </div>
-    
-    
-    <button class="btn btn-primary" type="submit">Continue</button>
-    <router-link to="/login">
-    <button class="btn btn-link">Already have an account?</button>
-    </router-link>
-  </form>
+      <div class="form-group">
+        <div class="col-md-6 mb-3">
+          <form-input type="password" id="registerPassword2" label="Confirm Password" icon="lock" placeholder="Confirm Password" v-on:input="confirmPassword($event)" v-bind:validFeedback="config.validPassword2Message" v-bind:invalidFeedback="config.invalidPassword2Message">
+          </form-input>
+        </div>
+      </div>
+      <div class="form-group">
+        <div class="col-md-6 mt-4 d-flex flex-column align-items-center">
+          <custom-button icon="arrow-bar-right" role="primary" type="submit" class="w-100">Continue</custom-button>
+          <router-link to="/login">
+          <custom-button role="link">Already have an account?</custom-button>
+          </router-link>
+        </div>
+      </div>
+    </form>
+  </div>
 </div>

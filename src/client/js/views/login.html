@@ -1,36 +1,31 @@
-<div class="container">
-  <form>
-    <div class="form-row">
-      <div class="col-md-6 mb-3">
-        <label for="loginUsername">Username</label>
-        <div class="input-group">
-          <div class="input-group-prepend">
-            <span class="input-group-text">
-              <i class="bi bi-person-fill"></i>
-            </span>
-          </div>
-          <input type="text" class="form-control" id="loginUsername" placeholder="Username" required>
-        </div>
+<div class="container d-flex flex-row align-items-center h-100">
+  <div class="bg-slate container d-flex flex-column pb-3 pt-4 rounded">
+    <div class="row d-flex pl-3 pr-3">
+      <div class="col-md-6 d-flex flex-row justify-content-center">
+        <p class="h5 font-weight-bold">Welcome back!</p>
       </div>
     </div>
-    <div class="form-row">
-      <div class="col-md-6 mb-3">
-        <label for="loginPassword">Password</label>
-        <div class="input-group">
-          <div class="input-group-prepend">
-            <span class="input-group-text">
-              <i class="bi bi-lock-fill"></i>
-            </span>
-          </div>
-          <input type="password" class="form-control" id="loginPassword" placeholder="Password" required>
+    <form class="w-100">
+      <div class="form-group">
+        <div class="col-md-6 mb-3">
+          <form-input id="registerUsername" label="Username" icon="person-fill" placeholder="Username">
+          </form-input>
         </div>
       </div>
-    </div>
-    
-    
-    <button class="btn btn-primary" type="submit">Login</button>
-    <router-link to="/register">
-    <button class="btn btn-link">Don't have an account?</button>
-    </router-link>
-  </form>
+      <div class="form-group">
+        <div class="col-md-6 mb-3">
+          <form-input type="password" id="registerPassword" label="Password" icon="lock-fill" placeholder="Password">
+          </form-input>
+        </div>
+      </div>
+      <div class="form-group">
+        <div class="col-md-6 mt-4 d-flex flex-column align-items-center">
+          <custom-button icon="box-arrow-in-right" role="primary" type="submit" class="w-100">Login</custom-button>
+          <router-link to="/register">
+          <custom-button role="link">Don't have an account?</custom-button>
+          </router-link>
+        </div>
+      </div>
+    </form>
+  </div>
 </div>
