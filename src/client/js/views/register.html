@@ -1,0 +1,67 @@
+<div class="container">
+  <form>
+    <div class="form-row">
+      <div class="col-md-6 mb-3">
+        <label for="registerUsername">Username</label>
+        <div class="input-group">
+          <div class="input-group-prepend">
+            <span class="input-group-text">
+              <i class="bi bi-person-fill"></i>
+            </span>
+          </div>
+          <input v-on:input="validateUsername($event)" type="text" class="form-control" id="registerUsername" placeholder="Username" required>
+          <div v-if="usernameValid" class="valid-feedback">
+            {{config.validUsernameMessage}}
+          </div>
+          <div v-if="!usernameValid" class="invalid-feedback">
+            {{config.invalidUsernameMessage}}
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="col-md-6 mb-3">
+        <label for="registerPassword">Password</label>
+        <div class="input-group">
+          <div class="input-group-prepend">
+            <span class="input-group-text">
+              <i class="bi bi-lock-fill"></i>
+            </span>
+          </div>
+          <input v-on:input="validatePassword($event)" type="password" class="form-control" id="registerPassword" placeholder="Password" required>
+          <div v-if="passwordValid" class="valid-feedback">
+            {{config.validPasswordMessage}}
+          </div>
+          <div v-if="!passwordValid" class="invalid-feedback">
+            {{config.invalidPasswordMessage}}
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="col-md-6 mb-3">
+        <label for="registerPassword2">Confirm Password</label>
+        <div class="input-group">
+          <div class="input-group-prepend">
+            <span class="input-group-text">
+              <i class="bi bi-lock"></i>
+            </span>
+          </div>
+          <input v-on:input="confirmPassword($event)" type="password" class="form-control" id="registerPassword2" placeholder="Confirm Password" required>
+          <div v-if="password2Valid" class="valid-feedback">
+            {{config.validPassword2Message}}
+          </div>
+          <div v-if="!password2Valid" class="invalid-feedback">
+            {{config.invalidPassword2Message}}
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    
+    <button class="btn btn-primary" type="submit">Continue</button>
+    <router-link to="/login">
+    <button class="btn btn-link">Already have an account?</button>
+    </router-link>
+  </form>
+</div>

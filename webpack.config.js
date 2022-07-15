@@ -5,5 +5,8 @@ module.exports = {
   output: {
     path: path.resolve(__dirname, "dist/client/js/"),
     filename: "app.js",
-  }
+  }/*,
+  devServer: {
+    historyApiFallback: true,
+  }*/
 };
