@@ -15,6 +15,7 @@ const paths = {
 		js: "src/client/**/*.js",
 		css: "src/client/**/*.css",
 		html: "src/client/index.html",
+		views_html: "src/client/js/views/*.html",
 		all: "src/client/**/*.*"
 	},
 	server: {
@@ -65,6 +66,11 @@ gulp.task("move:client:html", function() {
 		.pipe(gulp.dest("dist/client/"));
 });
 
+gulp.task("move:client:views_html", function() {
+	return gulp.src([paths.client.views_html])
+		.pipe(gulp.dest("dist/client/js/views/"));
+});
+
 gulp.task("move:server:js", function() {
 	return gulp.src([paths.server.js])
 		.pipe(gulp.dest("dist/server/"));
@@ -113,6 +119,12 @@ gulp.task("client:html", function() {
 		.pipe(gulp.dest("dist/client/"));
 });
 
+gulp.task("client:views_html", function() {
+	return gulp.src([paths.client.views_html])
+		.pipe(htmlminify())
+		.pipe(gulp.dest("dist/client/js/views/"));
+});
+
 gulp.task("server:js", function() {
 	return gulp.src([paths.server.js])
 		.pipe(babel(babelConfig))
@@ -125,7 +137,7 @@ gulp.task("lib", function() {
 		.pipe(gulp.dest("dist/lib/"));
 });
 
-gulp.task("build:client", gulp.series(["client:entry", "client:js", "client:css", "client:img", "client:svg", "client:html"]));
+gulp.task("build:client", gulp.series(["client:entry", "client:js", "client:css", "client:img", "client:svg", "client:html", "client:views_html"]));
 
 gulp.task("build:server", gulp.series(["server:js"]));
 
@@ -133,7 +145,7 @@ gulp.task("build:lib", gulp.series(["move:lib", "lib"]));
 
 gulp.task("build", gulp.series(["build:server", "build:client", "build:lib"]));
 
-gulp.task("move:client", gulp.series(["move:client:entry", "move:client:js", "move:client:css", "move:client:img", "move:client:svg", "move:client:html"]));
+gulp.task("move:client", gulp.series(["move:client:entry", "move:client:js", "move:client:css", "move:client:img", "move:client:svg", "move:client:html", "move:client:views_html"]));
 
 gulp.task("move:server", gulp.series(["move:server:js"]));
 

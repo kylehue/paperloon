@@ -11,16 +11,16 @@
 	--success-color: #27f753;
 	--danger-color: #f41818;
 
-	--slate-000: #576984;
-	--slate-100: #4c5d76;
-	--slate-200: #404f65;
-	--slate-300: #334155;
-	--slate-400: #2e3b4e;
-	--slate-500: #283446;
-	--slate-600: #222d3e;
-	--slate-700: #1d2737;
-	--slate-800: #182130;
-	--slate-900: #131b28;
+	--slate-000: #657285;
+	--slate-100: #596678;
+	--slate-200: #4b5667;
+	--slate-300: #3c4655;
+	--slate-400: #37414f;
+	--slate-500: #303947;
+	--slate-600: #29323f;
+	--slate-700: #232b37;
+	--slate-800: #1e2530;
+	--slate-900: #19202b;
 }
 
 html, body {
@@ -36,16 +36,19 @@ body {
 }
 
 .background {
-	position: absolute;
-	width: 100vw;
-	height: 100vh;
-	z-index: -1;
-	object-fit: cover;
+	position: absolute !important;
+	width: 100vw !important;
+	height: 100vh !important;
+	z-index: -1 !important;
+	object-fit: cover !important;
+	overflow: hidden !important;
 }
 
-.background image {
-	width: auto;
-	height: 100%;
+.background img {
+	width: auto !important;
+	height: 100% !important;
+	user-select: none !important;
+	pointer-events: none !important;
 }
 
 button {
@@ -57,9 +60,9 @@ form label {
 }
 
 input {
-	background-color: var(--slate-300) !important;
+	background-color: var(--slate-400) !important;
 	border: none !important;
-	box-shadow: 0 -1px 1px 0 var(--slate-200) !important;
+	box-shadow: 0 -1px 1px 0 var(--slate-300) !important;
 	color: var(--text-color) !important;
 }
 
@@ -87,7 +90,8 @@ input:focus + .bi {
 
 .inner-addon .bi {
   position: absolute;
-  padding: 0 13px;
+  top: 0;
+  padding: 9px 13px;
   pointer-events: none;
   color: var(--slate-000);
 }
