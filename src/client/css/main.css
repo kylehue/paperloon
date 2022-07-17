@@ -126,3 +126,21 @@ button .bi {
 .pe-none {
 	pointer-events: none;
 }
+
+.navbar {
+	background-color: var(--slate-500) !important;
+}
+
+.nav-item button.btn-link {
+	color: var(--light-600) !important;
+	text-decoration: none;
+}
+
+.nav-item button.btn-link:hover {
+	color: var(--light-500) !important;
+}
+
+.nav-item.active button.btn-link {
+	color: var(--accent) !important;
+}
+

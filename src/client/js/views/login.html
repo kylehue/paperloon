@@ -8,7 +8,7 @@
     <form class="w-100">
       <div class="form-group">
         <div class="col-md-6 mb-3">
-          <form-input id="registerUsername" label="Username" icon="person-fill" placeholder="">
+          <form-input id="registerUsername" label="Username" icon="person-fill" placeholder="" focus="true">
           </form-input>
         </div>
       </div>
@@ -21,9 +21,7 @@
       <div class="form-group">
         <div class="col-md-6 mt-4 d-flex flex-column align-items-center">
           <custom-button icon="box-arrow-in-right" role="primary" type="submit" class="w-100">Login</custom-button>
-          <router-link to="/register">
-          <custom-button role="link">Don't have an account?</custom-button>
-          </router-link>
+          <custom-button role="link" to="/register">Don't have an account?</custom-button>
         </div>
       </div>
     </form>

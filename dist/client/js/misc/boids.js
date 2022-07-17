@@ -18,18 +18,25 @@ canvas.style.position = "absolute";
 canvas.width = innerWidth;
 canvas.height = innerHeight;
 
+var fps = 30,
+	frameCount = 0,
+	fpsInterval = 1000 / fps,
+	then = performance.now(),
+	now,
+	startTime = then,
+	elapsed;
+
 var bg = document.createElement("img");
 bg.src = "../../assets/images/bg-04.jpg";
 
-var pool;
-
-var fishes = [],
+var pool,
+	fishes = [],
 	maxFishCount = utils.map(canvas.width, 0, 1440, 60, 200),
 	limitX,
 	limitY,
-	minSpeed = 2.5,
-	maxSpeed = 4.5;
-
+	minSpeed = 1.5,
+	maxSpeed = 2.5,
+	clampingSize = 5;
 
 var tension = utils.map(canvas.width, 0, 1440, 5, 10);
 var divisionPoints = [];
@@ -73,8 +80,9 @@ addEventListener("resize", event => {
 class Fish {
 	constructor() {
 		this.id = utils.uid();
-		this.size = utils.random(2, 5);
+		this.size = utils.random(3, 7);
 		this.color = utils.random(fishColors);
+		this.opacity = 0;
 
 		this.position = {
 			x: utils.random(0, limitX),
@@ -91,6 +99,7 @@ class Fish {
 
 	render() {
 		ctx.save();
+		ctx.globalAlpha = this.opacity;
 		ctx.translate(this.position.x, this.position.y);
 		ctx.rotate(this.angle);
 		ctx.fillStyle = this.color;
@@ -104,6 +113,11 @@ class Fish {
 	}
 
 	update() {
+		// Fade in
+		if (this.opacity < 1) {
+			this.opacity += 0.02;
+		}
+
 		//Move
 		this.angle += this.direction;
 		this.position.x += Math.cos(this.angle) * this.velocity;
@@ -125,7 +139,7 @@ class Fish {
 
 					// Join near flocks
 					if (distance < this.visionRadius + fish.visionRadius) {
-						let reactionSpeed = 0.75 / distance;
+						let reactionSpeed = 0.4 / distance;
 						this.angle = utils.lerp(this.angle, fish.angle, reactionSpeed);
 						fish.angle = utils.lerp(fish.angle, this.angle, reactionSpeed);
 						this.velocity = utils.lerp(this.velocity, fish.velocity, reactionSpeed);
@@ -136,8 +150,8 @@ class Fish {
 					if (distance < this.size) {
 						//Change angle
 						var angle = Math.atan2(fish.position.y - this.position.y, fish.position.x - this.position.x);
-						this.angle = utils.lerp(this.angle, -angle, 0.1 / distance)
-						fish.angle = utils.lerp(fish.angle, angle, 0.1 / distance);
+						this.angle = utils.lerp(this.angle, -angle, 0.07 / distance)
+						fish.angle = utils.lerp(fish.angle, angle, 0.07 / distance);
 					}
 				}
 			}
@@ -147,27 +161,28 @@ class Fish {
 		this.clamp();
 	}
 
+	respawn() {
+		for (var i = 0; i < fishes.length; i++) {
+			let fish = fishes[i];
+			if (fish.id == this.id) {
+				fishes.splice(i, 1);
+				break;
+			}
+		}
+
+		fishes.push(new Fish());
+	}
+
 	clamp() {
-		//World infinity
-		if (this.position.x - this.size > limitX) {
-			this.position.x -= limitX + this.size * 2;
-			this.position.y = utils.random(0, canvas.height);
-		} else if (this.position.x + this.size < 0) {
-			this.position.x = limitX;
-			this.position.y = utils.random(0, canvas.height);
-		}
+		let offset = -this.size * clampingSize;
+		let mTop = this.position.y < offset;
+		let mBottom = this.position.y > limitY - offset;
+		let mLeft = this.position.x < offset;
+		let mRight = this.position.x > limitX - offset;
 
-		if (this.position.y - this.size > limitY) {
-			this.position.x = utils.random(0, limitX);
-			this.position.y -= limitY + this.size * 2;
-		} else if (this.position.y + this.size < 0) {
-			this.position.x = utils.random(0, limitX);
-			this.position.y = limitY;
-		}
 
-		if (this.position.x - this.size > limitX || this.position.x + this.size < 0 || this.position.y - this.size > limitY || this.position.y + this.size < 0) {
-			this.angle = utils.random(-Math.PI, Math.PI);
-			this.velocity = utils.random(minSpeed, maxSpeed);
+		if (mTop || mBottom || mLeft || mRight) {
+			this.respawn();
 		}
 	}
 
@@ -186,8 +201,6 @@ for (var i = 0; i < maxFishCount; i++) {
 	var fish = new Fish();
 	fishes.push(fish);
 }
-
-var frameCount = 0;
 
 function drawImageProp(ctx, img, x, y, w, h, offsetX, offsetY) {
 	if (arguments.length === 2) {
@@ -249,7 +262,7 @@ function draw() {
 	ctx.closePath();
 
 	ctx.save();
-	
+
 	// Background
 	ctx.fillStyle = "#232b37";
 	ctx.beginPath();
@@ -285,9 +298,17 @@ function update() {
 
 function animate() {
 	requestAnimationFrame(animate);
-	draw();
+
+	now = performance.now();
+	elapsed = now - then;
+
+	if (elapsed > fpsInterval) {
+		draw();
+		frameCount++;
+		then = now - (elapsed % fpsInterval);
+	}
+
 	update();
-	frameCount++;
 }
 
 animate();

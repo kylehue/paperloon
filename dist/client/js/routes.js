@@ -25,5 +25,8 @@ router.beforeEach((to, from, next) => {
 
 const app = new Vue({
 	el: "#app",
-	router: router
+	router: router,
+	mounted() {
+		console.log("loaded!")
+	}
 });
