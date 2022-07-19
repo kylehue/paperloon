@@ -38,7 +38,7 @@ var pool,
 	maxSpeed = 2.5,
 	clampingSize = 5;
 
-var tension = utils.map(canvas.width, 0, 1440, 5, 10);
+var tension = utils.map(canvas.width, 0, 1440, 15, 30);
 var divisionPoints = [];
 
 function init() {
@@ -55,18 +55,80 @@ function init() {
 		height: canvas.height
 	});
 
-	divisionPoints = [
-		[limitX, 0],
-		[limitX * 1.0 - tension * 1.0, canvas.height * 0.1],
-		[limitX * 0.9 + tension * 0.9, canvas.height * 0.13],
-		[limitX * 0.8 - tension * 0.8, canvas.height * 0.19],
-		[limitX * 0.7 + tension * 0.7, canvas.height * 0.27],
-		[limitX * 0.6 - tension * 0.6, canvas.height * 0.39],
-		[limitX * 0.5 + tension * 0.5, canvas.height * 0.54],
-		[limitX * 0.4 - tension * 0.4, canvas.height * 0.72],
-		[limitX * 0.2 - tension * 0.2, canvas.height * 0.9],
-		[0, canvas.height]
-	];
+	divisionPoints = [{
+		x: limitX,
+		y: 0
+	}, {
+		x: limitX * 0.9,
+		y: limitY * 0.1 * utils.random(0.975, 1.025)
+	}, {
+		x: limitX * 0.8,
+		y: limitY * 0.2 * utils.random(0.975, 1.025)
+	}, {
+		x: limitX * 0.7,
+		y: limitY * 0.3 * utils.random(0.975, 1.025)
+	}, {
+		x: limitX * 0.6,
+		y: limitY * 0.4 * utils.random(0.975, 1.025)
+	}, {
+		x: limitX * 0.5,
+		y: limitY * 0.5 * utils.random(0.975, 1.025)
+	}, {
+		x: limitX * 0.4,
+		y: limitY * 0.6 * utils.random(0.975, 1.025)
+	}, {
+		x: limitX * 0.3,
+		y: limitY * 0.7 * utils.random(0.975, 1.025)
+	}, {
+		x: limitX * 0.2,
+		y: limitY * 0.8 * utils.random(0.975, 1.025)
+	}, {
+		x: limitX * 0.1,
+		y: limitY * 0.9 * utils.random(0.975, 1.025)
+	}, {
+		x: 0,
+		y: limitY * 1.0 * utils.random(0.975, 1.025)
+	}];
+
+
+	/*if (!this.vertices.length) {
+		for (var i = 0; i <= maxSides; i++) {
+			let position = {
+				x: cos(i * PI / (maxSides / 2)) * this.radius,
+				y: sin(i * PI / (maxSides / 2)) * this.radius,
+				angularVelocity: random(waveThreshold)
+			}
+			this.vertices.push(position);
+		}
+	}*/
+
+	divisionPoints = [];
+
+	for (var i = 0; i < 10; i++) {
+		divisionPoints.push({
+			x: 0,
+			y: 0
+		});
+	}
+
+	let angle = 0;
+	for (var i = 0; i < divisionPoints.length; i++) {
+		angle = Math.PI * i / divisionPoints.length / 2;
+		let point = divisionPoints[i];
+		point.x += Math.cos(angle) * 400;
+		point.y += (70 + i * 10) + Math.sin(angle) * 400;
+		point.angle = angle;
+	}
+
+	divisionPoints.unshift({
+		x: divisionPoints[0].x + 30,
+		y: 0
+	});
+
+	divisionPoints.push({
+		x: 0,
+		y: divisionPoints[divisionPoints.length - 1].y + 30
+	});
 
 	pool.clear();
 }
@@ -243,36 +305,20 @@ function drawImageProp(ctx, img, x, y, w, h, offsetX, offsetY) {
 	ctx.drawImage(img, cx, cy, cw, ch, x, y, w, h);
 }
 
+let curveTension = 0.3;
+
 function draw() {
 	ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-	/*ctx.fillStyle = "#131b28";
-	ctx.fillRect(0, 0, canvas.width, canvas.height);*/
-
-	// Drop shadow
-	ctx.fillStyle = "rgba(0,0,0,0.15)";
-	ctx.beginPath();
-	ctx.moveTo(0, 0);
-	ctx.lineTo(limitX, 0);
-	for (var i = 0; i < divisionPoints.length; i++) {
-		ctx.lineTo(divisionPoints[i][0] + 4, divisionPoints[i][1] + 20);
-	}
-	ctx.lineTo(0, canvas.height + 20);
-	ctx.fill();
-	ctx.closePath();
-
 	ctx.save();
 
-	// Background
 	ctx.fillStyle = "#232b37";
 	ctx.beginPath();
 	ctx.moveTo(0, 0);
-	for (var i = 0; i < divisionPoints.length; i++) {
-		ctx.lineTo(divisionPoints[i][0], divisionPoints[i][1]);
-	}
-	ctx.lineTo(0, canvas.height);
-	ctx.fill();
+	utils.drawCurve(ctx, divisionPoints, 0.4);
 	ctx.closePath();
+	ctx.fill();
+
+	//Clip
 	ctx.clip();
 
 	// Overlay
@@ -291,6 +337,29 @@ function draw() {
 function update() {
 	for (var i = 0; i < fishes.length; i++) {
 		fishes[i].update();
+	}
+
+	for (var i = 0; i < divisionPoints.length; i++) {
+		let point = divisionPoints[i];
+		let nextPoint = divisionPoints[i + 1];
+
+
+		if (nextPoint) {
+			let index = Math.abs(divisionPoints.length - i);
+			let speed = 0.5;
+			/*point.x += Math.sin(((index * 5) + frameCount * speed) / 1.2) * (3) * speed;*/
+
+			if (point.angle) {
+				point.x += Math.cos(point.angle) * Math.cos(((index * 5) + frameCount * speed) / 1.2) * (3) * speed;;
+				point.y += Math.sin(point.angle) * Math.sin(((index * 5) + frameCount * speed) / 1.2) * (3) * speed;;
+			}
+		}
+	}
+
+
+
+	if (frameCount % 3 == 0) {
+		//console.log(frameCount);
 	}
 
 	pool.clear();
