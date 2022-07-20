@@ -45,7 +45,7 @@ function init() {
 	canvas.width = innerWidth;
 	canvas.height = innerHeight;
 
-	limitX = canvas.width / 2;
+	limitX = canvas.width;
 	limitY = canvas.height;
 
 	pool = new Quadtree({
@@ -55,80 +55,17 @@ function init() {
 		height: canvas.height
 	});
 
-	divisionPoints = [{
-		x: limitX,
-		y: 0
-	}, {
-		x: limitX * 0.9,
-		y: limitY * 0.1 * utils.random(0.975, 1.025)
-	}, {
-		x: limitX * 0.8,
-		y: limitY * 0.2 * utils.random(0.975, 1.025)
-	}, {
-		x: limitX * 0.7,
-		y: limitY * 0.3 * utils.random(0.975, 1.025)
-	}, {
-		x: limitX * 0.6,
-		y: limitY * 0.4 * utils.random(0.975, 1.025)
-	}, {
-		x: limitX * 0.5,
-		y: limitY * 0.5 * utils.random(0.975, 1.025)
-	}, {
-		x: limitX * 0.4,
-		y: limitY * 0.6 * utils.random(0.975, 1.025)
-	}, {
-		x: limitX * 0.3,
-		y: limitY * 0.7 * utils.random(0.975, 1.025)
-	}, {
-		x: limitX * 0.2,
-		y: limitY * 0.8 * utils.random(0.975, 1.025)
-	}, {
-		x: limitX * 0.1,
-		y: limitY * 0.9 * utils.random(0.975, 1.025)
-	}, {
-		x: 0,
-		y: limitY * 1.0 * utils.random(0.975, 1.025)
-	}];
-
-
-	/*if (!this.vertices.length) {
-		for (var i = 0; i <= maxSides; i++) {
-			let position = {
-				x: cos(i * PI / (maxSides / 2)) * this.radius,
-				y: sin(i * PI / (maxSides / 2)) * this.radius,
-				angularVelocity: random(waveThreshold)
-			}
-			this.vertices.push(position);
-		}
-	}*/
-
 	divisionPoints = [];
 
-	for (var i = 0; i < 10; i++) {
+	let maxSides = 9;
+	for (var i = 0; i < maxSides; i++) {
+		let angle = Math.PI * (i - 1) / (maxSides - 2) / 2;
 		divisionPoints.push({
-			x: 0,
-			y: 0
+			x: Math.cos(angle) * 400,
+			y: Math.sin(angle - i * 0.02) * (limitY - i * 10),
+			angle: angle
 		});
 	}
-
-	let angle = 0;
-	for (var i = 0; i < divisionPoints.length; i++) {
-		angle = Math.PI * i / divisionPoints.length / 2;
-		let point = divisionPoints[i];
-		point.x += Math.cos(angle) * 400;
-		point.y += (70 + i * 10) + Math.sin(angle) * 400;
-		point.angle = angle;
-	}
-
-	divisionPoints.unshift({
-		x: divisionPoints[0].x + 30,
-		y: 0
-	});
-
-	divisionPoints.push({
-		x: 0,
-		y: divisionPoints[divisionPoints.length - 1].y + 30
-	});
 
 	pool.clear();
 }
@@ -305,7 +242,7 @@ function drawImageProp(ctx, img, x, y, w, h, offsetX, offsetY) {
 	ctx.drawImage(img, cx, cy, cw, ch, x, y, w, h);
 }
 
-let curveTension = 0.3;
+let curvePoints = utils.getCurvePoints(divisionPoints, 0.5);
 
 function draw() {
 	ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -314,7 +251,8 @@ function draw() {
 	ctx.fillStyle = "#232b37";
 	ctx.beginPath();
 	ctx.moveTo(0, 0);
-	utils.drawCurve(ctx, divisionPoints, 0.4);
+	utils.drawLines(ctx, curvePoints);
+	//utils.drawCurve(ctx, divisionPoints, 0.5);
 	ctx.closePath();
 	ctx.fill();
 
@@ -339,24 +277,17 @@ function update() {
 		fishes[i].update();
 	}
 
+	curvePoints = utils.getCurvePoints(divisionPoints, 0.5);
+
 	for (var i = 0; i < divisionPoints.length; i++) {
 		let point = divisionPoints[i];
-		let nextPoint = divisionPoints[i + 1];
 
+		let index = Math.abs(divisionPoints.length - i) * 2;
+		let speed = 0.5;
 
-		if (nextPoint) {
-			let index = Math.abs(divisionPoints.length - i);
-			let speed = 0.5;
-			/*point.x += Math.sin(((index * 5) + frameCount * speed) / 1.2) * (3) * speed;*/
-
-			if (point.angle) {
-				point.x += Math.cos(point.angle) * Math.cos(((index * 5) + frameCount * speed) / 1.2) * (3) * speed;;
-				point.y += Math.sin(point.angle) * Math.sin(((index * 5) + frameCount * speed) / 1.2) * (3) * speed;;
-			}
-		}
+		point.x += Math.cos(point.angle) * Math.sin((index + frameCount * speed) / 1.2) * (3) * speed;;
+		point.y += Math.sin(point.angle) * Math.cos((index + frameCount * speed) / 1.2) * (3) * speed;;
 	}
-
-
 
 	if (frameCount % 3 == 0) {
 		//console.log(frameCount);
@@ -367,6 +298,7 @@ function update() {
 
 function animate() {
 	requestAnimationFrame(animate);
+	update();
 
 	now = performance.now();
 	elapsed = now - then;
@@ -377,7 +309,6 @@ function animate() {
 		then = now - (elapsed % fpsInterval);
 	}
 
-	update();
 }
 
 animate();
